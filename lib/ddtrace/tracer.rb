@@ -279,6 +279,7 @@ module Datadog
     # method will figure out what to do, submitting a +span+ for recording
     # is like trying to record its +context+.
     def record(context)
+			byebug
       context = context.context if context.is_a?(Datadog::Span)
       return if context.nil?
       trace, sampled = context.get
@@ -294,6 +295,7 @@ module Datadog
     # Send the trace to the writer to enqueue the spans list in the agent
     # sending queue.
     def write(trace)
+			byebug
       return if @writer.nil? || !@enabled
 
       if Datadog::Tracer.debug_logging
