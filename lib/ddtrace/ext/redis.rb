@@ -6,6 +6,9 @@ module Datadog
 
       # net extension
       DB = 'out.redis_db'.freeze
-    end
+			
+			# raw command 
+			RAW_COMMAND = 'redis.raw_command'.freeze
+		end
   end
 end
