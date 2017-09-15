@@ -8,7 +8,7 @@ module Datadog
         tracer: Datadog.tracer,
       }.freeze
 
-			def around_perform(*args)
+			def before_perform(*args)
 				rails_config = ::Rails.configuration.datadog_trace
 				Datadog::Tracer.log.debug("///////INIT RESQJOB")
         base_config = DEFAULT_CONFIG.merge(rails_config)
@@ -20,7 +20,6 @@ res = nil
 					span.service = 'resque.job'
 					span.span_type = Ext::AppTypes::WEB
 					span.set_tag('resque.queue', 'bonjour')
-					yield
 				end		
 			end	
 		end

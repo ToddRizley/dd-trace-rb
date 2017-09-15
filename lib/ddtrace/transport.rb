@@ -45,7 +45,6 @@ module Datadog
 
     # route the send to the right endpoint
     def send(endpoint, data)
-      byebug
 			case endpoint
       when :services
         payload = @encoder.encode_services(data)
