@@ -13,13 +13,12 @@ module Datadog
 				Datadog::Tracer.log.debug("///////INIT RESQJOB")
         base_config = DEFAULT_CONFIG.merge(rails_config)
 				@tracer = Datadog.tracer
-res = nil
-				Datadog::Tracer.log.debug("/////IN AROUND_PERF")
+				Datadog::Tracer.log.debug("/////IN BEFORE_PERF")
 				@tracer.trace('resque.job') do |span|
 					span.resource = 'foobar'
 					span.service = 'resque.job'
 					span.span_type = Ext::AppTypes::WEB
-					span.set_tag('resque.queue', 'bonjour')
+					span.set_tag('resque.queue', 'bonjour hello')
 				end		
 			end	
 		end
