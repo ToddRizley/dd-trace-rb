@@ -66,7 +66,8 @@ module Datadog
               else
                 status = '500'
               end
-              Datadog::Tracer.log if status.starts_with('5')
+              Datadog::Tracer.log.info(error)
+              Datadog::Tracer.log.info(status)
               span.set_error(error) if status.starts_with?('5')
             end
           ensure
