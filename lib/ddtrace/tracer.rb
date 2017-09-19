@@ -177,7 +177,7 @@ module Datadog
     # * +tags+: extra tags which should be added to the span.
     def start_span(name, options = {})
       start_time = options.fetch(:start_time, Time.now.utc)
-      tags = options.fetch(:tags, {})
+			tags = options.fetch(:tags, {})
 
       opts = options.select do |k, _v|
         # Filter options, we want no side effects with unexpected args.
@@ -189,7 +189,7 @@ module Datadog
       opts[:context] = ctx unless ctx.nil?
 
       span = Span.new(self, name, opts)
-      if parent.nil?
+			if parent.nil?
         # root span
         @sampler.sample(span)
         span.set_tag('system.pid', Process.pid)
@@ -204,6 +204,7 @@ module Datadog
       # this could at some point be optional (start_active_span vs start_manual_span)
       ctx.add_span(span) unless ctx.nil?
 
+			Datadog::Tracer.log.debug("//// NEW SPAN: @name: #{span.name} span_id:  #{span.span_id} parent_id: #{span.parent_id} resource: #{span.resource} start: #{span.start_time} stat: #{span.status}, tracer: #{span.tracer}")
       span
     end
 
@@ -255,8 +256,10 @@ module Datadog
       # that a call to tracer.trace() without a block, returns
       # a span that should be manually finished.
       if block_given?
+				Datadog::Tracer.log.debug("///// yes block given")
         begin
           yield(span)
+					Datadog::Tracer.log.debug("//// ran yield")
         # rubocop:disable Lint/RescueException
         # Here we really want to catch *any* exception, not only StandardError,
         # as we really have no clue of what is in the block,
@@ -267,7 +270,8 @@ module Datadog
           span.set_error(e)
           raise e
         ensure
-          span.finish()
+					Datadog::Tracer.log.debug("//// span finish triggered by tracer")
+					span.finish()
         end
       else
         span
@@ -300,9 +304,17 @@ module Datadog
         Datadog::Tracer.log.debug("Writing #{trace.length} spans (enabled: #{@enabled})")
         str = String.new('')
         PP.pp(trace, str)
-        Datadog::Tracer.log.debug(str)
+        #Datadog::Tracer.log.debug(str)
       end
-			Datadog::Tracer.log.debug("tracer.rb#write: trace: #{trace}")
+			
+			#Datadog::Tracer.log.debug("tracer.rb#write: trace: #{trace}")
+			trace.each do |span|
+				Datadog::Tracer.log.debug("span in trace:")
+				Datadog::Tracer.log.debug("name: #{span.name}")
+				Datadog::Tracer.log.debug("service: #{span.service}")
+				Datadog::Tracer.log.debug("span_id: #{span.span_id}")
+				Datadog::Tracer.log.debug("end: #{span.end_time}")
+			end
 			@writer.write(trace, @services)
     end
 

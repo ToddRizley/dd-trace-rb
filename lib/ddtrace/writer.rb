@@ -55,18 +55,27 @@ module Datadog
     # flush spans to the trace-agent, handles spans only
     def send_spans(traces, transport)
       return true if traces.empty?
+			Datadog::Tracer.log.debug("///// writer #send_spans: traces #{traces}")
+			traces.each do |span|
+				Datadog::Tracer.log.debug("name: #{span.name}")
+				Datadog::Tracer.log.debug("id: #{span.span_id}")
+				Datadog::Tracer.log.debug("end_time: #{span.end_time}")
+			end
 
       code = transport.send(:traces, traces)
 
+			Datadog::Tracer.log.debug("//// sent traces: #{code}")
       if transport.server_error? code # requeue on server error, skip on success or client error
-        traces[0..@buff_size].each do |trace|
+				Datadog::Tracer.log.debug("///// server error")
+				traces[0..@buff_size].each do |trace|
           @worker.enqueue_trace trace
         end
         return false
       end
 
       @traces_flushed += traces.length()
-      true
+			Datadog::Tracer.log.debug("////traces flushed: #{@traces_flushed}")
+			true
     end
 
     # flush services to the trace-agent, handles services only
@@ -94,6 +103,7 @@ module Datadog
       # This check ensures that if a process doesn't own the current +Writer+, async workers
       # will be initialized again (but only once for each process).
       pid = Process.pid
+			Datadog::Tracer.log.debug("//////IN WRITER: WRITE PID: #{pid}")
       @mutex_after_fork.synchronize do
         if pid != @pid
           @pid = pid

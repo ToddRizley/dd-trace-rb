@@ -51,7 +51,8 @@ module Datadog
         status_code = post(@services_endpoint, payload)
       when :traces
         count = data.length
-        payload = @encoder.encode_traces(data)
+				Datadog::Tracer.log.debug("////sending traces: #{data} to endpoint: #{endpoint}")
+				payload = @encoder.encode_traces(data)
         status_code = post(@traces_endpoint, payload, count)
       else
         Datadog::Tracer.log.error("Unsupported endpoint: #{endpoint}")
@@ -74,7 +75,8 @@ module Datadog
       request.body = data
 
       response = Net::HTTP.start(@hostname, @port, read_timeout: TIMEOUT) { |http| http.request(request) }
-      handle_response(response)
+			Datadog::Tracer.log.debug("/// Attempted send, response: #{response}")
+			handle_response(response)
     rescue StandardError => e
       Datadog::Tracer.log.error(e.message)
       500

@@ -129,6 +129,7 @@ module Datadog
       rescue StandardError => e
         Datadog::Tracer.log.debug("error recording finished trace: #{e}")
       end
+			Datadog::Tracer.log.debug("IN SPAN: FINISHED: #{self}  @name: #{self.name} span_id:  #{self.span_id} parent_id: #{self.parent_id} resource: #{self.resource} start: #{self.start_time} finished: #{self.end_time} stat: #{self.status}, tracer: #{self.tracer}")
       self
     end
 
@@ -155,11 +156,13 @@ module Datadog
       if parent.nil?
         @trace_id = @span_id
         @parent_id = 0
+				Datadog::Tracer.log.debug("/////IN SPAN: parent is nil, so trace_id: #{@trace_id} should equal span: #{@span_id}, parent id should be zero: #{@parent_id}")
       else
         @trace_id = parent.trace_id
         @parent_id = parent.span_id
         @service ||= parent.service
         @sampled = parent.sampled
+				Datadog::Tracer.log.debug("//////IN SPAN: parent not nil, so trace_id: #{@trace_id} should not equal span: #{@span_id}, parent id should not be zero: #{@parent_id}")
       end
     end
 

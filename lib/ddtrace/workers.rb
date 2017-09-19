@@ -43,6 +43,7 @@ module Datadog
 
         begin
           services = @service_buffer.pop()
+					Datadog::Tracer.log.debug("callback services: #{services}")
           # pick up the latest services hash (this is a FIFO list)
           # that is different from what we sent before.
           different = services.inject(false) { |acc, elem| elem != @last_flushed_services ? elem : acc }
