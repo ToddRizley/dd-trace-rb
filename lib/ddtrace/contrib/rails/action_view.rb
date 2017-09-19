@@ -74,6 +74,11 @@ module Datadog
             template_name = Datadog::Contrib::Rails::Utils.normalize_template_name(payload.fetch(:identifier))
             span.set_tag('rails.template_name', template_name)
             span.set_tag('rails.layout', payload.fetch(:layout))
+             Datadog::Tracer.log.info("COOP/COOP")
+              Datadog::Tracer.log.info(error)
+              Datadog::Tracer.log.info("FIRE WALK WITH ME")
+              Datadog::Tracer.log.info(status)
+              Datadog::Tracer.log.error(error)
             span.set_error(payload[:exception]) if payload[:exception]
           ensure
             span.start_time = start
@@ -96,6 +101,11 @@ module Datadog
           begin
             template_name = Datadog::Contrib::Rails::Utils.normalize_template_name(payload.fetch(:identifier))
             span.set_tag('rails.template_name', template_name)
+             Datadog::Tracer.log.info("COOP/COOP")
+              Datadog::Tracer.log.info(error)
+              Datadog::Tracer.log.info("FIRE WALK WITH ME")
+              Datadog::Tracer.log.info(status)
+              Datadog::Tracer.log.error(error)
             span.set_error(payload[:exception]) if payload[:exception]
           ensure
             span.start_time = start
