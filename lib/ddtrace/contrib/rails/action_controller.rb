@@ -70,6 +70,7 @@ module Datadog
               Datadog::Tracer.log.info(error)
               Datadog::Tracer.log.info("FIRE WALK WITH ME")
               Datadog::Tracer.log.info(status)
+              Datadog::Tracer.log.error(error)
               span.set_error(error) if status.starts_with?('5')
             end
           ensure
