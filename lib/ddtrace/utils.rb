@@ -6,11 +6,23 @@ module Datadog
     # We use a custom random number generator because we want no interference
     # with the default one. Using the default prng, we could break code that
     # would rely on srand/rand sequences.
-    @rnd = Random.new
+# Return a span id
+		def self.next_id
+			      reset! if was_forked
+						      @rnd.rand(Datadog::Span::MAX_ID)
+									    end
 
-    # Return a span id
-    def self.next_id
-      @rnd.rand(Datadog::Span::MAX_ID)
-    end
-  end
+		    private
+
+				    def self.reset!
+							      @pid = Process.pid
+										      @rnd = Random.new
+													    end
+
+						    def self.was_forked
+									      Process.pid != @pid
+												    end
+
+								    reset!
+										  end
 end
