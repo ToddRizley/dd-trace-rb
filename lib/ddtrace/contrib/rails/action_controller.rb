@@ -66,7 +66,9 @@ module Datadog
               else
                 status = '500'
               end
+              Datadog::Tracer.log.info("COOP/COOP")
               Datadog::Tracer.log.info(error)
+              Datadog::Tracer.log.info("FIRE WALK WITH ME")
               Datadog::Tracer.log.info(status)
               span.set_error(error) if status.starts_with?('5')
             end
